@@ -2,5 +2,5 @@ import { defineConfig } from 'astro/config';
 
 export default defineConfig({
   site: 'https://culturaydesarrollo.org',
-  base: '/blog', // Crucial para que GitHub Pages lo monte en la subcarpeta correcta
+  base: '/blog', // <-- Esto es lo que le indica a la red dónde encajar los archivos compilados
 });
