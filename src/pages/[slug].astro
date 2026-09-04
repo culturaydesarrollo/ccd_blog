@@ -1,16 +1,45 @@
 ---
+// src/pages/[slug].astro
 import { getCollection } from 'astro:content';
-import BlogNavbar from '../components/BlogNavbar.astro'; // Importación del Navbar del blog
-import '../styles/global.css'; // <-- Importamos los mismos colores corporativos
+import { Image } from 'astro:assets';
+import BlogNavbar from '../components/BlogNavbar.astro';
+import '../styles/global.css';
 
+// 1. Generar las rutas estáticas para cada artículo
 export async function getStaticPaths() {
   const blogEntries = await getCollection('blog');
   return blogEntries.map(entry => ({
     params: { slug: entry.slug }, props: { entry },
   }));
 }
+
 const { entry } = Astro.props;
 const { Content } = await entry.render();
+
+// 2. ALGORITMO DE ARTÍCULOS RELACIONADOS
+const allPosts = await getCollection('blog');
+
+const relatedPosts = allPosts
+  // Excluir el artículo que se está leyendo actualmente
+  .filter(post => post.slug !== entry.slug)
+  // Asignar una puntuación de relevancia según coincidencias
+  .map(post => {
+    let score = 0;
+    // Sumar 3 puntos si comparte exactamente la misma categoría principal
+    if (post.data.category === entry.data.category) score += 3;
+    // Sumar 1 punto por cada etiqueta (tag) en común
+    const commonTags = post.data.tags.filter(tag => entry.data.tags.includes(tag));
+    score += commonTags.length;
+    return { post, score };
+  })
+  // Filtrar solo los que tengan al menos algún grado de relación (score > 0)
+  .filter(item => item.score > 0)
+  // Ordenar de mayor a menor relevancia
+  .sort((a, b) => b.score - a.score)
+  // Limitar la lista a un máximo de 2 sugerencias visuales
+  .slice(0, 2)
+  // Devolver solo el objeto del post ordenado
+  .map(item => item.post);
 ---
 
 <!DOCTYPE html>
@@ -18,43 +47,149 @@ const { Content } = await entry.render();
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{entry.data.title} | Blog</title>
+    <title>{entry.data.title} | Blog Cultura y Desarrollo</title>
+    <meta name="description" content={entry.data.description} />
     <style>
         .article-container {
             max-width: 750px;
             margin: 0 auto;
             padding: 3rem 1.5rem;
+            padding-top: 95px; /* Margen para que no choque con el Navbar flotante */
+        }
+        .category-badge {
+            background-color: var(--color-primary);
+            color: #ffffff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
         }
         h1 {
             color: var(--color-primary);
-            font-size: 2.3rem;
+            font-size: 2.4rem;
             line-height: 1.2;
+            margin: 0.75rem 0;
         }
-        .article-content :global(h2), .article-content :global(h3) {
-            color: var(--color-primary);
-            margin-top: 2rem;
+        .meta-info {
+            color: #718096;
+            font-size: 0.9rem;
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
-        .article-content :global(blockquote) {
-            border-left: 4px solid var(--color-secondary);
+        .tag-list {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+        .tag-item {
             background: var(--color-bg-alt);
-            padding: 1rem;
-            margin: 1.5rem 0;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--color-text);
+        }
+        .article-content {
+            margin-top: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        /* SECCIÓN DE ARTÍCULOS RELACIONADOS */
+        .related-section {
+            margin-top: 4rem;
+            padding-top: 2.5rem;
+            border-top: 2px solid var(--color-border);
+        }
+        .related-title {
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .related-card {
+            background: var(--color-bg-alt);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-top: 4px solid var(--color-secondary);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .related-card h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.2rem;
+        }
+        .related-card h3 a {
+            color: var(--color-primary);
+        }
+        .related-card p {
+            font-size: 0.95rem;
+            color: var(--color-text);
+            margin: 0 0 1rem 0;
         }
     </style>
 </head>
 <body>
-    <!-- Añadimos el menú exclusivo del blog -->
+
     <BlogNavbar />
 
     <div class="article-container">
-        <nav style="margin-bottom: 2rem;"><a href="/blog/">← Volver al blog</a></nav>
         <article>
-            <header style="margin-bottom: 2rem; border-bottom: 1px solid var(--color-border); padding-bottom: 1rem;">
+            <header style="border-bottom: 1px solid var(--color-border); padding-bottom: 1rem;">
+                <span class="category-badge">{entry.data.category}</span>
                 <h1>{entry.data.title}</h1>
-                <span style="color: #718096;">{entry.data.pubDate.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                
+                <div class="meta-info">
+                    <span>Por <strong>{entry.data.author}</strong></span>
+                    <span>•</span>
+                    <time>{entry.data.pubDate.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+                </div>
+
+                {entry.data.tags && entry.data.tags.length > 0 && (
+                    <div class="tag-list">
+                        {entry.data.tags.map(tag => <span class="tag-item">#{tag}</span>)}
+                    </div>
+                )}
+
+                {entry.data.image && (
+                    <Image src={entry.data.image} alt={entry.data.title} style="width: 100%; height: auto; border-radius: 8px; margin-top: 1rem; max-height: 380px; object-fit: cover;" />
+                )}
             </header>
-            <div class="article-content"><Content /></div>
+
+            <div class="article-content">
+                <Content />
+            </div>
         </article>
+
+        {/* 3. BLOQUE VISUAL DE RECOMENDACIONES */}
+        {relatedPosts.length > 0 && (
+            <section class="related-section">
+                <h2 class="related-title">Artículos relacionados sugeridos</h2>
+                <div class="related-grid">
+                    {relatedPosts.map(post => (
+                        <div class="related-card">
+                            <div>
+                                <span style="font-size: 0.8rem; color: var(--color-secondary); font-weight: 600; text-transform: uppercase;">{post.data.category}</span>
+                                <h3 style="margin-top: 0.25rem;">
+                                    <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
+                                </h3>
+                                <p>{post.data.description}</p>
+                            </div>
+                            <a href={`/blog/${post.slug}/`} style="font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem;">
+                                Leer artículo →
+                            </a>
+                        </div>
+                    ))}
+                </div>
+            </section>
+        )}
     </div>
+
 </body>
 </html>
