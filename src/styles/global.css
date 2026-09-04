@@ -1,0 +1,35 @@
+/* src/styles/global.css */
+
+:root {
+  /* Paleta de colores institucional extraída de tu portal */
+  --color-primary: #0b3c5d;      /* Azul Oscuro (Títulos y marcas) */
+  --color-secondary: #328cc1;    /* Azul Intermedio (Enlaces y botones) */
+  --color-text: #2c3e50;         /* Gris Oscuro Corporativo (Lectura) */
+  --color-bg: #ffffff;           /* Fondo principal */
+  --color-bg-alt: #f8f9fa;       /* Fondo secundario (Tarjetas y bloques) */
+  --color-border: #e2e8f0;       /* Gris claro para líneas divisorias */
+  
+  /* Fuentes corporativas */
+  --font-sans: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+}
+
+/* Configuraciones base para todo el blog */
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.7;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: var(--color-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}

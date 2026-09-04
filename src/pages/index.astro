@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import BlogNavbar from '../components/BlogNavbar.astro'; // Importación del Navbar del blog
+import '../styles/global.css';
+
+const posts = await getCollection('blog');
+const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog | Cultura y Desarrollo</title>
+</head>
+<body>
+    <!-- Añadimos el menú exclusivo del blog -->
+    <BlogNavbar />
+
+    <!-- El contenedor del blog con un padding-top para evitar superposiciones -->
+    <div class="blog-container" style="padding-top: 85px; max-width: 850px; margin: 0 auto; padding-left: 1.5rem; padding-right: 1.5rem;">
+        <header style="margin-bottom: 3rem; margin-top: 1.5rem;">
+            <h1 style="color: var(--color-primary); font-size: 2.3rem; margin-bottom: 0.5rem;">Blog de Cultura y Desarrollo</h1>
+            <p style="color: #667085; margin: 0;">Espacio de difusión, análisis y gestión cultural comunitaria.</p>
+        </header>
+        <main>
+            <!-- Aquí continúa tu listado normal de artículos -->
+        </main>
+    </div>
+</body>
+</html>
