@@ -2,7 +2,7 @@ name: Desplegar Blog Astro
 
 on:
   push:
-    branches: [ main, master ] # Se activa sin importar si tu rama se llama main o master
+    branches: [ main, master ] # Se activa tanto si tu rama se llama main o master
 
 permissions:
   contents: read
@@ -19,7 +19,7 @@ jobs:
       - name: Configurar Node.js v22
         uses: actions/setup-node@v4
         with:
-          node-version: '22' # Obliga de forma estricta a usar Node v22 o superior
+          node-version: '22'
           cache: 'npm'
 
       - name: Instalar dependencias
@@ -27,6 +27,10 @@ jobs:
 
       - name: Compilar proyecto Astro
         run: npm run build
+
+      # Este es el truco para solucionar el error del dominio duplicado
+      - name: Inyectar CNAME institucional
+        run: echo "culturaydesarrollo.org" > ./dist/CNAME
 
       - name: Subir artefacto para Pages
         uses: actions/upload-pages-artifact@v3
