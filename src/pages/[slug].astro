@@ -1,6 +1,6 @@
 ---
 // src/pages/[slug].astro
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import { Image } from 'astro:assets';
 import BlogNavbar from '../components/BlogNavbar.astro';
 import '../styles/global.css';
@@ -9,19 +9,19 @@ import '../styles/global.css';
 export async function getStaticPaths() {
   const blogEntries = await getCollection('blog');
   return blogEntries.map(entry => ({
-    params: { slug: entry.slug }, props: { entry },
+    params: { slug: entry.id }, props: { entry },
   }));
 }
 
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 
 // 2. ALGORITMO DE ARTÍCULOS RELACIONADOS
 const allPosts = await getCollection('blog');
 
 const relatedPosts = allPosts
   // Excluir el artículo que se está leyendo actualmente
-  .filter(post => post.slug !== entry.slug)
+    .filter(post => post.id !== entry.id)
   // Asignar una puntuación de relevancia según coincidencias
   .map(post => {
     let score = 0;
@@ -177,11 +177,11 @@ const relatedPosts = allPosts
                             <div>
                                 <span style="font-size: 0.8rem; color: var(--color-secondary); font-weight: 600; text-transform: uppercase;">{post.data.category}</span>
                                 <h3 style="margin-top: 0.25rem;">
-                                    <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
+                                    <a href={`/blog/${post.id}/`}>{post.data.title}</a>
                                 </h3>
                                 <p>{post.data.description}</p>
                             </div>
-                            <a href={`/blog/${post.slug}/`} style="font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem;">
+                            <a href={`/blog/${post.id}/`} style="font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem;">
                                 Leer artículo →
                             </a>
                         </div>

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "pubDate": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "image": {
+      "type": "string"
+    },
+    "author": {
+      "default": "Corporación Cultura y Desarrollo",
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Gestión Cultural",
+        "Comunidad",
+        "Proyectos",
+        "Patrimonio"
+      ]
+    },
+    "tags": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "description",
+    "pubDate",
+    "category"
+  ]
+}

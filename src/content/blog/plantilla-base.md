@@ -1,7 +1,7 @@
+---
 title: "Título de tu artículo aquí (Corto y directo)"
 description: "Un resumen de 2 líneas que enganche al lector y describa de qué trata la publicación."
 pubDate: "2026-09-03"
-image: "./imagenes/nombre-de-tu-imagen.jpg"
 author: "Nombre del Autor o Equipo"
 category: "Gestión Cultural" # Opciones válidas: Gestión Cultural, Comunidad, Proyectos, Patrimonio
 tags: ["Comunidad", "Territorio", "Taller"]
