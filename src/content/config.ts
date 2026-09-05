@@ -3,11 +3,15 @@ import { defineCollection, z } from 'astro:content';
 
 const blog = defineCollection({
   type: 'content',
-  schema: z.object({
+  // 1. Agregamos ({ image }) aquí para poder usar el validador de imágenes de Astro 👇
+  schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string(),
     pubDate: z.coerce.date(),
-    image: z.string().optional(),
+    
+    // 2. Cambiamos z.string() por image() para que Astro procese las rutas de tus .md 👇
+    image: image().optional(),
+    
     author: z.string().default('Corporación Cultura y Desarrollo'),
     
     // AHORA SÍ: Acepta cualquier categoría variada que escribas en tus .md
