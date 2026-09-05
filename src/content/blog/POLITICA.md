@@ -3,7 +3,7 @@ description: "Reflexión En torno al Tiempo y su implicación como Política"
 pubDate: "2026-09-04"
 image: "./imagenes/esp-abst-tiempo.jpg"
 author: "Dimitri Guzmán"
-category: "Proyectos" 
+category: "Gestion Cultural" 
 tags: ["Comunidad", "Territorio", "Taller"]
 ---
 
