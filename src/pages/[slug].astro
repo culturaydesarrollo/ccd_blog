@@ -262,14 +262,14 @@ const relatedPosts = allPosts
                 const historyBox = document.getElementById('history-box');
                 const historyLink = document.getElementById('history-link');
                 const historyTitle = document.getElementById('history-title');
-            }
             
             if (historyBox && historyLink && historyTitle) {
                 historyTitle.innerText = previousPost.title;
                 historyLink.href = `/${previousPost.id}/`;
                 historyBox.style.display = 'block'; // Hacemos visible el botón
             }
-
+            }
+            
             // 3. Registrar este post actual en la memoria del dispositivo para cuando el usuario salte a otra página
             localStorage.setItem('last_visited_post', JSON.stringify({
                 id: currentId,
