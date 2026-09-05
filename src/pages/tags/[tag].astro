@@ -1,0 +1,115 @@
+---
+// src/pages/tags/[tag].astro
+import { getCollection } from 'astro:content';
+import BlogNavbar from '../../components/BlogNavbar.astro';
+import '../../styles/global.css';
+
+// 1. Generar las rutas dinámicas para cada etiqueta existente en los artículos
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  
+  // Extraer todas las etiquetas únicas del blog, convirtiéndolas a minúsculas para consistencia
+  const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags || []).flat())];
+  
+  // Crear una página por cada etiqueta encontrada
+  return uniqueTags.map((tag) => {
+    // Filtrar los artículos que contienen la etiqueta actual
+    const filteredPosts = allPosts.filter((post) => post.data.tags.includes(tag));
+    return {
+      params: { tag: tag.toLowerCase() }, // La URL se generará en minúsculas (ej: /tags/cultura)
+      props: { posts: filteredPosts, tagName: tag },
+    };
+  });
+}
+
+const { tag } = Astro.params;
+const { posts, tagName } = Astro.props;
+
+// Ordenar los artículos filtrados por fecha más reciente
+const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Artículos sobre #{tagName} | Blog</title>
+    <style>
+        .blog-container {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+            padding-top: 95px;
+        }
+        header {
+            margin-bottom: 3rem;
+            border-bottom: 2px solid var(--color-border);
+            padding-bottom: 1.5rem;
+        }
+        h1 {
+            color: var(--color-primary);
+            font-size: 2.3rem;
+            margin: 0.5rem 0;
+        }
+        .tag-banner {
+            display: inline-block;
+            background-color: var(--color-secondary);
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .post-item {
+            background: var(--color-bg-alt);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            border-left: 5px solid var(--color-secondary);
+        }
+        .post-title a {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+        .post-title a:hover {
+            color: var(--color-secondary);
+        }
+        .post-date {
+            font-size: 0.85rem;
+            color: #718096;
+        }
+    </style>
+</head>
+<body>
+    <BlogNavbar />
+
+    <div class="blog-container">
+        <header>
+            <a href="/" style="color: var(--color-secondary); text-decoration: none; font-size: 0.95rem;">← Volver al inicio del blog</a>
+            <div style="margin-top: 1rem;">
+                <span class="tag-banner">Etiqueta</span>
+                <h1>Artículos relacionados con #{tagName}</h1>
+                <p style="color: #667085; margin: 0;">Explorando contenidos bajo el eje conceptual de la corporación.</p>
+            </div>
+        </header>
+
+        <main>
+            <ul style="list-style: none; padding: 0;">
+                {sortedPosts.map(post => (
+                    <li class="post-item">
+                        <span class="post-date">{post.data.pubDate.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                        <h2 class="post-title" style="margin: 0.5rem 0;">
+                            <a href={`/${post.id}/`}>{post.data.title}</a>
+                        </h2>
+                        <p style="margin-bottom: 1rem; color: var(--color-text);">{post.data.description}</p>
+                        <a href={`/${post.id}/`} style="font-weight: 600; font-size: 0.95rem;">Leer artículo →</a>
+                    </li>
+                ))}
+            </ul>
+        </main>
+    </div>
+</body>
+</html>
