@@ -8,7 +8,7 @@ category: "Proyectos" # <-- Usa "Proyectos" o "Gestión Cultural" obligatoriamen
 tags: ["Anuncios", "Novedades"]
 
 ---
-![esp abst tiempo](/C:/Users/kutzm/Documents/GitHub/ccd_blog/src/content/blog/imagenes/esp-abst-tiempo.jpg)
+
 # Introducción
 
 No se hace silencio, se dejará de hacer ruido. Con la misma lógica, no se hace el futuro, se deja de hacer el pasado. El ruido es lo que enturbia nuestra capacidad de depurar, ordenar nuestra experiencia, aquí junto me susurran: "escribir la historia, hacer memoria".
