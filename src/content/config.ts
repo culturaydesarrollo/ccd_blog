@@ -1,3 +1,4 @@
+// src/content/config.ts
 import { defineCollection, z } from 'astro:content';
 
 const blog = defineCollection({
@@ -9,7 +10,7 @@ const blog = defineCollection({
     image: z.string().optional(),
     author: z.string().default('Corporación Cultura y Desarrollo'),
     
-    // CAMBIO TOTAL: Acepta cualquier categoría en texto plano
+    // AHORA SÍ: Acepta cualquier categoría variada que escribas en tus .md
     category: z.string().default('Gestión Cultural'), 
     
     tags: z.array(z.string()).default([]),
@@ -17,3 +18,4 @@ const blog = defineCollection({
 });
 
 export const collections = { blog };
+
