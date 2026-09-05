@@ -1,6 +1,6 @@
 ---
 // src/pages/[slug].astro
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content'; // <-- Importamos render de forma moderna
 import { Image } from 'astro:assets';
 import BlogNavbar from '../components/BlogNavbar.astro';
 import '../styles/global.css';
@@ -27,9 +27,11 @@ export async function getStaticPaths() {
 }
 
 const { entry, prevPost, nextPost } = Astro.props;
-const { Content } = await entry.render();
 
-// 2. Algoritmo de artículos relacionados
+// 2. CORRECCIÓN CRUCIAL: Usamos la función render moderna de Astro v5
+const { Content } = await render(entry);
+
+// 3. Algoritmo de artículos relacionados
 const allPosts = await getCollection('blog');
 const relatedPosts = allPosts
   .filter(post => post.id !== entry.id)
@@ -132,7 +134,7 @@ const relatedPosts = allPosts
         /* DISEÑO DEL BOTÓN DE HISTORIAL INTELIGENTE */
         .history-container {
             margin-top: 2rem;
-            display: none; /* Se activa dinámicamente con JS */
+            display: none; 
             margin-bottom: 1.5rem;
         }
         .history-btn {
@@ -172,7 +174,7 @@ const relatedPosts = allPosts
                     <time>{entry.data.pubDate.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
                 </div>
 
-                {/* ETIQUETAS INTERACTIVAS CON EFECTO DE COLOR ANIMADO */}
+                {/* ETIQUETAS INTERACTIVAS */}
                 {entry.data.tags && entry.data.tags.length > 0 && (
                     <div class="tag-list" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
                         {entry.data.tags.map(tag => (
@@ -228,7 +230,7 @@ const relatedPosts = allPosts
             )}
         </nav>
 
-        <!-- RECOMENDACIONES POR COINCIDENCIA -->
+        <!-- RECOMENDACIONES -->
         {relatedPosts.length > 0 && (
             <section class="related-section">
                 <h2 style="color: var(--color-primary); font-size: 1.4rem; margin-bottom: 1rem;">Artículos relacionados</h2>
@@ -245,7 +247,7 @@ const relatedPosts = allPosts
         )}
     </div>
 
-    {/* SCRIPT INTEGRADO: GESTIÓN DE HISTORIAL EN LOCALSTORAGE */}
+    {/* GESTIÓN DE HISTORIAL EN LOCALSTORAGE */}
     <script is:inline>
         document.addEventListener('DOMContentLoaded', () => {
             const currentEl = document.getElementById('current-post-data');
@@ -253,22 +255,22 @@ const relatedPosts = allPosts
             
             const currentId = currentEl.getAttribute('data-id');
             const currentTitle = currentEl.getAttribute('data-title');
-
+            
             // 1. Intentar leer qué post se guardó en la visita inmediatamente anterior
             const previousPost = JSON.parse(localStorage.getItem('last_visited_post'));
 
             // 2. Si hay historial y no es el artículo idéntico que se está leyendo, pintar el botón de retorno
-            if (previousPost && previousPost.id !== currentId) {
+             if (previousPost && previousPost.id !== currentId) {
                 const historyBox = document.getElementById('history-box');
                 const historyLink = document.getElementById('history-link');
                 const historyTitle = document.getElementById('history-title');
             
-            if (historyBox && historyLink && historyTitle) {
-                historyTitle.innerText = previousPost.title;
-                historyLink.href = `/${previousPost.id}/`;
-                historyBox.style.display = 'block'; // Hacemos visible el botón
-            }
-            }
+                if (historyBox && historyLink && historyTitle) {
+                   historyTitle.innerText = previousPost.title;
+                   historyLink.href = `/${previousPost.id}/`;
+                   historyBox.style.display = 'block';
+                }
+             }
             
             // 3. Registrar este post actual en la memoria del dispositivo para cuando el usuario salte a otra página
             localStorage.setItem('last_visited_post', JSON.stringify({
