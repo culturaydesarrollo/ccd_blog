@@ -25,6 +25,10 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
+      # Forzamos a Astro a borrar la caché corrupta guardada por GitHub Actions 👇
+      - name: Limpiar caché de Astro
+        run: npx astro cleanup
+
       - name: Compilar proyecto Astro
         run: npm run build
 
@@ -43,6 +47,10 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     needs: build
     runs-on: ubuntu-latest
+    steps:
+      - name: Desplegar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
     steps:
       - name: Desplegar en GitHub Pages
         id: deployment
