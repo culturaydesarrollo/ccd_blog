@@ -1,9 +1,9 @@
 ---
 title: "Políticas Culturales para el Desarrollo"
-description: "Análisis y reflexiones Pasado y Futuro y Politica."
+description: "Análisis y reflexiones Pasado y Futuro y Política."
 pubDate: "2026-09-04"
-author: "Corporación Cultura y Desarrollo"
-category: "Gestión Cultural"
+author: "Dimitri Guzman"
+category: "Tiempo y Política"
 tags: ["Políticas", "Cultura", "Territorio"]
 ---
 
