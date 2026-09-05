@@ -2,7 +2,6 @@
 title: "Tiempo y Política"
 description: "Reflexión En torno al Tiempo y su implicación como Política."
 pubDate: "2026-09-06"
-image: "./imagenes/esp-abst-tiempo.jpg" # opcional, si no se usa, elimina esta linea
 author: "Corporación Cultura y Desarrollo"
 category: "Proyectos" # <-- Usa "Proyectos" o "Gestión Cultural" obligatoriamente
 tags: ["Anuncios", "Novedades"]
