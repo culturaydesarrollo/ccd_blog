@@ -29,9 +29,9 @@ const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDa
                 {sortedPosts.map(post => (
                     <article class="post-card">
                         <p class="post-category">{post.data.category}</p>
-                        <h2><a href={`/${post.slug}/`}>{post.data.title}</a></h2>
+                        <h2><a href={`/${post.id}/`}>{post.data.title}</a></h2>
                         <p>{post.data.description}</p>
-                        <a class="read-more" href={`/${post.slug}/`}>Leer artículo →</a>
+                        <a class="read-more" href={`/${post.id}/`}>Leer artículo →</a>
                     </article>
                 ))}
             </section>
