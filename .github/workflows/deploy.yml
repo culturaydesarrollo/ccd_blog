@@ -2,7 +2,7 @@ name: Desplegar Blog Astro
 
 on:
   push:
-    branches: [ main, master ] # Se activa tanto si tu rama se llama main o master
+    branches: [ main, master ]
 
 permissions:
   contents: read
@@ -25,10 +25,12 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
+      - name: Limpiar cache de Astro
+        run: npx astro cleanup
+
       - name: Compilar proyecto Astro
         run: npm run build
 
-      # Este es el truco para solucionar el error del dominio duplicado
       - name: Inyectar CNAME institucional
         run: echo "blog.culturaydesarrollo.org" > ./dist/CNAME
 
