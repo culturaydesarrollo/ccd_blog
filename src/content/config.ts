@@ -15,7 +15,7 @@ const blog = defineCollection({
     author: z.string().default('Corporación Cultura y Desarrollo'),
     
     // AHORA SÍ: Acepta cualquier categoría variada que escribas en tus .md
-    category: z.string().default('Gestión Cultural'), 
+    category: category: z.array(z.string()).default([]), 
     
     tags: z.array(z.string()).default([]),
   }),
