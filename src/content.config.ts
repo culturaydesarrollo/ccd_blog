@@ -8,7 +8,7 @@ const blog = defineCollection({
     description: z.string(),
     pubDate: z.coerce.date(),
     image: z.string().optional(),
-    author: z.string().default('Corporación Cultura y Desarrollo'),
+    author: z.string(),
     category: z.array(z.string()),
     tags: z.array(z.string()).default([]),
   }),
