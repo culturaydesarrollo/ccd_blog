@@ -10,9 +10,6 @@ category:
   - "Opinion"
 tags: ["Colombia", "Politica Cultural", "Patrimonio"]
 ---
-
-# El patrimonio no se conserva: se vive
-##### por: Hector Galeano David
 #### A lo largo de la historia, la construcción y el fortalecimiento del valor patrimonial, ya sea material o inmaterial, han sido procesos complejos. Mucho más cuando se trata de territorios olvidados del país. En Colombia persiste una mirada centralista según la cual el patrimonio parece adquirir mayor valor cuando es tangible y, sobre todo, cuando se encuentra en Bogotá.
 #### Colombia tiene una diversidad impresionante de patrimonios: iglesias coloniales, centros históricos, caminos reales, estaciones ferroviarias, sitios arqueológicos, paisajes culturales, fiestas, músicas, cocinas tradicionales, conocimientos ancestrales y una extraordinaria diversidad de expresiones culturales. Tenemos patrimonio material e inmaterial de sobra.
 #### Sin embargo, carecemos como nación de una política capaz de entender que el patrimonio puede y debe convertirse en un motor para impulsar las transformaciones territoriales. Se olvida una premisa fundamental: detrás de buena parte de ese patrimonio existen comunidades que le dan significado, lo mantienen vivo y lo transmiten de generación en generación.
