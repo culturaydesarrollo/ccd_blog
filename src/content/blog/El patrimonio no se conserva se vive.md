@@ -3,12 +3,8 @@ title: "El patrimonio no se conserva: se vive"
 description: "El patrimonio cultural debe ser motor vivo de desarrollo social y económico para los protagonistas de su gestión."
 pubDate: "2026-09-08"
 author: "Héctor Galeano David"
-category:
-  - "Cultura"
-  - "Política Cultural"
-  - "Gestión Cultural"
-  - "Opinion"
-tags: ["Colombia", "Politica Cultural", "Patrimonio"]
+category: ["Cultura", "Política Cultural", "Gestión Cultural", "Opinión"]
+tags: ["Colombia", "Política Cultural", "Patrimonio"]
 ---
 
 # El patrimonio no se conserva: se vive
