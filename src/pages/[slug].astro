@@ -181,7 +181,20 @@ const relatedPosts = allPosts
         }
         .author-modal h2 {
             color: var(--color-primary);
-            margin: 0 0 0.75rem;
+            margin: 0;
+        }
+        .author-modal-heading {
+            align-items: center;
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        .author-modal-image {
+            border-radius: 50%;
+            flex: 0 0 72px;
+            height: 72px;
+            object-fit: cover;
+            width: 72px;
         }
         .author-modal-close {
             background: var(--color-primary);
@@ -253,7 +266,10 @@ const relatedPosts = allPosts
         </article>
 
         <dialog class="author-modal" id="author-modal">
-            <h2>{entry.data.author}</h2>
+            <div class="author-modal-heading">
+                <img class="author-modal-image" src={entry.data.authorImage} alt={`Foto de ${entry.data.author}`} width="72" height="72" />
+                <h2>{entry.data.author}</h2>
+            </div>
             <p>{entry.data.authorBio}</p>
             <button class="author-modal-close" type="button">Cerrar</button>
         </dialog>
