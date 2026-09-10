@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BlogNavbar from '../components/BlogNavbar.astro';
 import ContactForm from '../components/ContactForm.astro';
+import BackToTop from '../components/BackToTop.astro';
 import { slugify } from '../lib/slugify';
 import '../styles/global.css';
 
@@ -60,7 +61,7 @@ const sortedPosts = posts.sort(
         }
     </style>
 </head>
-<body>
+<body id="top">
     
     <!-- Floating Navbar component -->
     <BlogNavbar />
@@ -126,6 +127,7 @@ const sortedPosts = posts.sort(
             )}
         </main>
         <ContactForm postTitle="Consulta general del blog" />
+        <BackToTop />
     </div>
     <script is:inline>
         document.querySelectorAll('[data-author-modal]').forEach((trigger) => {

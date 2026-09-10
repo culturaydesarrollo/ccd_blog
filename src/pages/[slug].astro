@@ -4,6 +4,7 @@ import { getCollection, render } from 'astro:content'; // <-- IMPORTACIÓN CORRE
 import { Image } from 'astro:assets';
 import BlogNavbar from '../components/BlogNavbar.astro';
 import ContactForm from '../components/ContactForm.astro';
+import BackToTop from '../components/BackToTop.astro';
 import { slugify } from '../lib/slugify';
 import '../styles/global.css';
 
@@ -193,7 +194,7 @@ const relatedPosts = allPosts
         }
     </style>
 </head>
-<body>
+<body id="top">
 
     <BlogNavbar contactHref="#contacto" />
 
@@ -303,6 +304,7 @@ const relatedPosts = allPosts
         )}
 
         <ContactForm postTitle={entry.data.title} />
+        <BackToTop />
     </div>
 
     {/* SCRIPT CON COMILLAS INVERTIDAS DE JAVASCRIPT */}

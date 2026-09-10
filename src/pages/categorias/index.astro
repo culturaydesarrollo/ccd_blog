@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BlogNavbar from '../../components/BlogNavbar.astro';
+import BackToTop from '../../components/BackToTop.astro';
 import { slugify } from '../../lib/slugify';
 import '../../styles/global.css';
 
@@ -19,7 +20,7 @@ const categories = [...new Map(
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Categorías | Blog Cultura y Desarrollo</title>
 </head>
-<body>
+<body id="top">
     <BlogNavbar />
 
     <main style="max-width: 850px; margin: 0 auto; padding: 7rem 1.5rem 3rem;">
@@ -38,6 +39,7 @@ const categories = [...new Map(
                 </li>
             ))}
         </ul>
+        <BackToTop />
     </main>
 </body>
 </html>

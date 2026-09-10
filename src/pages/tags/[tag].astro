@@ -2,6 +2,7 @@
 // src/pages/tags/[tag].astro
 import { getCollection } from 'astro:content';
 import BlogNavbar from '../../components/BlogNavbar.astro';
+import BackToTop from '../../components/BackToTop.astro';
 import { slugify } from '../../lib/slugify';
 import '../../styles/global.css';
 
@@ -88,7 +89,7 @@ const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDa
         }
     </style>
 </head>
-<body>
+<body id="top">
     <BlogNavbar />
 
     <div class="blog-container">
@@ -115,6 +116,7 @@ const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDa
                 ))}
             </ul>
         </main>
+        <BackToTop />
     </div>
 </body>
 </html>

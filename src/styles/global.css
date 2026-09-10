@@ -33,3 +33,11 @@ a:hover {
   color: var(--color-primary);
   text-decoration: underline;
 }
+
+.back-to-top {
+  display: block;
+  margin: 2rem 0 0;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
