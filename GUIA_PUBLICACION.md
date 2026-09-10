@@ -12,6 +12,12 @@ Como regla practica:
 - En el post se debe usar `width: 100%` y `max-width: 100%` cuando se agreguen estilos HTML.
 - No se deben deformar las imagenes cambiando por separado su ancho y alto.
 
+## Compartir imagenes
+
+La barra para compartir imagenes es opcional y se controla desde el frontmatter
+de cada post. Usar `shareImage: true` para mostrarla o `shareImage: false` para
+ocultarla. Si se omite el campo, la barra permanece oculta.
+
 ## Dimensiones recomendadas
 
 | Orientacion | Proporcion | Dimension ideal | Uso sugerido |

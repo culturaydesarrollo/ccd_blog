@@ -5,6 +5,7 @@ pubDate: "2026-09-10"
 author: "Corporación Cultura y Desarrollo"
 authorImage: "/images/ccd-auth.svg"
 authorBio: "Organización dedicada a promover la cultura, la participación comunitaria y el desarrollo territorial."
+shareImage: true
 category: ["Convocatorias", "Proyectos"]
 tags: ["Anuncios", "Novedades"]
 ---
