@@ -2,6 +2,7 @@
 // src/pages/tags/[tag].astro
 import { getCollection } from 'astro:content';
 import BlogNavbar from '../../components/BlogNavbar.astro';
+import { slugify } from '../../lib/slugify';
 import '../../styles/global.css';
 
 // 1. Generar las rutas dinámicas para cada etiqueta existente en los artículos
@@ -9,15 +10,19 @@ export async function getStaticPaths() {
   const allPosts = await getCollection('blog');
   
   // Extraer todas las etiquetas únicas del blog, convirtiéndolas a minúsculas para consistencia
-  const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags || []).flat())];
+    const uniqueTags = [...new Map(
+        allPosts
+            .flatMap((post) => post.data.tags || [])
+            .map((tag) => [slugify(tag), tag])
+    )];
   
   // Crear una página por cada etiqueta encontrada
-  return uniqueTags.map((tag) => {
+    return uniqueTags.map(([tagSlug, tagName]) => {
     // Filtrar los artículos que contienen la etiqueta actual
-    const filteredPosts = allPosts.filter((post) => post.data.tags.includes(tag));
+        const filteredPosts = allPosts.filter((post) => post.data.tags.some((postTag) => slugify(postTag) === tagSlug));
     return {
-      params: { tag: tag.toLowerCase() }, // La URL se generará en minúsculas (ej: /tags/cultura)
-      props: { posts: filteredPosts, tagName: tag },
+            params: { tag: tagSlug },
+            props: { posts: filteredPosts, tagName },
     };
   });
 }

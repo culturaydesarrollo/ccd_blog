@@ -3,6 +3,8 @@ title: "El patrimonio no se conserva: se vive"
 description: "El patrimonio cultural debe ser motor vivo de desarrollo social y económico para los protagonistas de su gestión."
 pubDate: "2026-09-08"
 author: "Héctor Galeano David"
+authorImage: "/images/hector-galeano.jpg"
+authorBio: "Internacionalista, Esp. en Gobierno y Asuntos Públicos, Mag. Dirección Estratégica con énfasis en Gerencia, Mag. Resolución de Conflictos y Mediación. Doctorando en Ciencias Sociales U. del Norte (Relaciones en Materia de Seguridad Colombia-Brasil). Docente Universitario e Investigador en Relaciones Internacionales por 25 años, especialmente Política Exterior Colombiana, Geopolítica, A. Latina y el Gran Caribe. Docente Destacado en Historia y Ciencia Política. Analista Internacional en medios (BBC y Sputnik). Desarrolla amplia actividad de Divulgación y Análisis sobre Asuntos Internacionales. Miembro de la Corp. Cultura y Desarrollo, que promueve iniciativas Culturales, Sociales y de Desarrollo Territorial. Creador y Conductor de Caribe Global, espacio de Análisis sobre Historia, Geopolítica, Cultura y Relaciones Internacionales del Gran Caribe."
 category:
   - "Cultura"
   - "Política Cultural"

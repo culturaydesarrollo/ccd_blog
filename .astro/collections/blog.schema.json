@@ -16,17 +16,21 @@
       "type": "string"
     },
     "author": {
-      "default": "Corporación Cultura y Desarrollo",
+      "type": "string"
+    },
+    "authorImage": {
+      "default": "/images/author-default.svg",
+      "type": "string"
+    },
+    "authorBio": {
+      "default": "Biografía del autor próximamente.",
       "type": "string"
     },
     "category": {
-      "type": "string",
-      "enum": [
-        "Gestión Cultural",
-        "Comunidad",
-        "Proyectos",
-        "Patrimonio"
-      ]
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "tags": {
       "default": [],
@@ -43,6 +47,7 @@
     "title",
     "description",
     "pubDate",
+    "author",
     "category"
   ]
 }

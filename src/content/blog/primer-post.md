@@ -3,6 +3,7 @@ title: "Bienvenidos al nuevo Blog de Cultura y Desarrollo"
 description: "Inauguramos nuestro espacio de difusión sobre gestión cultural y desarrollo comunitario."
 pubDate: "2026-09-04"
 author: "Corporación Cultura y Desarrollo"
+authorBio: "Organización dedicada a promover la cultura, la participación comunitaria y el desarrollo territorial."
 category: ["Gestión Cultural"]
 tags: ["Cultura", "Comunidad"]
 ---

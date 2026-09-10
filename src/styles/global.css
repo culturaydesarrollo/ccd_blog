@@ -1,13 +1,13 @@
 /* src/styles/global.css */
 
 :root {
-  /* Paleta de colores institucional extraída de tu portal */
-  --color-primary: #0b3c5d;      /* Azul Oscuro (Títulos y marcas) */
-  --color-secondary: #328cc1;    /* Azul Intermedio (Enlaces y botones) */
-  --color-text: #2c3e50;         /* Gris Oscuro Corporativo (Lectura) */
-  --color-bg: #ffffff;           /* Fondo principal */
-  --color-bg-alt: #f8f9fa;       /* Fondo secundario (Tarjetas y bloques) */
-  --color-border: #e2e8f0;       /* Gris claro para líneas divisorias */
+  /* Paleta coordinada con el marrón del logo institucional */
+  --color-primary: #24130f;      /* Marrón profundo para títulos y marcas */
+  --color-secondary: #9a5f3f;    /* Terracota para enlaces y botones */
+  --color-text: #3f302b;         /* Marrón grisáceo para lectura */
+  --color-bg: #fffdfb;           /* Fondo principal */
+  --color-bg-alt: #f8f1ec;       /* Fondo secundario para tarjetas y bloques */
+  --color-border: #e4d7cf;       /* Beige grisáceo para líneas divisorias */
   
   /* Fuentes corporativas */
   --font-sans: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
