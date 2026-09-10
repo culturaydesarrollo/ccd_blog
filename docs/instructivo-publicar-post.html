@@ -148,7 +148,13 @@ Escribe aquí el contenido del artículo en Markdown.</pre>
   </ol>
   <p>Recuerda que las páginas de categorías y etiquetas se generan durante el build; al crear una categoría nueva debes volver a desplegar.</p>
 
-  <h2>9. Cerrar el servidor local</h2>
+  <h2>9. Formulario de contacto</h2>
+  <p>Al final de cada artículo aparece un formulario de contacto conectado con <strong>Formspree</strong>. El botón <strong>Contacto</strong> de la barra de navegación lleva al ancla de ese formulario.</p>
+  <p>El formulario utiliza el endpoint:</p>
+  <pre>https://formspree.io/f/mkoearok</pre>
+  <p>La integración usa HTML básico con el método <code>POST</code>; no requiere instalar paquetes adicionales. Antes de publicar, prueba que los campos obligatorios estén completos y confirma que Formspree reciba el mensaje.</p>
+
+  <h2>10. Cerrar el servidor local</h2>
   <p>Cuando termines de revisar el post, detén el servidor de desarrollo para liberar el puerto y cerrar la tarea local:</p>
   <ol>
     <li>Vuelve a la terminal donde está ejecutándose <code>npm run dev</code>.</li>

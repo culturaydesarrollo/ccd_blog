@@ -1,5 +1,6 @@
 ---
 /* src/components/BlogNavbar.astro */
+const { contactHref = '/#contacto' } = Astro.props;
 ---
 <nav class="blog-navbar">
   <div class="navbar-container">
@@ -13,7 +14,7 @@
 <ul class="navbar-links">
   <li><a href="https://blog.culturaydesarrollo.org">Inicio Blog</a></li>
   <li>
-    <a href="https://culturaydesarrollo.org" class="nav-btn">
+    <a href={contactHref} class="nav-btn">
       Contacto
     </a>
   </li>
