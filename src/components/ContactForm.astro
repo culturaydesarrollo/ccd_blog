@@ -1,5 +1,8 @@
 ---
-const { postTitle } = Astro.props;
+const { postTitle, postAuthor, postDate } = Astro.props;
+const messageHeader = postAuthor && postDate
+  ? `Artículo: ${postTitle}\nAutor: ${postAuthor}\nFecha de publicación: ${postDate}\n----------------------------------------`
+  : '';
 ---
 
 <section class="contact-section" id="contacto" aria-labelledby="contact-title">
@@ -17,7 +20,7 @@ const { postTitle } = Astro.props;
     <input id="contact-email" name="email" type="email" autocomplete="email" required />
 
     <label for="contact-message">Mensaje</label>
-    <textarea id="contact-message" name="message" rows="5" required></textarea>
+    <textarea id="contact-message" name="message" rows="5" required>{messageHeader ? `${messageHeader}\n\n` : ''}</textarea>
 
     <button type="submit">Enviar correo</button>
   </form>

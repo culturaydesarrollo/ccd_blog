@@ -390,7 +390,11 @@ const relatedPosts = allPosts
             </section>
         )}
 
-        <ContactForm postTitle={entry.data.title} />
+        <ContactForm
+            postTitle={entry.data.title}
+            postAuthor={entry.data.author}
+            postDate={entry.data.pubDate.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
+        />
         <BackToTop />
     </div>
 
