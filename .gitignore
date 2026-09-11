@@ -5,4 +5,5 @@ node_modules
 .astro/settings.json
 dist/*
 !dist/.gitkeep
-docs/
+docs/*
+!docs/GUIA_PUBLICACION.md
