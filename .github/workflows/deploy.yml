@@ -28,8 +28,8 @@ jobs:
       - name: Limpiar cache de Astro
         run: npx astro cleanup
 
-      - name: Compilar proyecto Astro
-        run: npm run build
+      - name: Ejecutar validaciones de contenido y compilación
+        run: npm run validate
 
       - name: Inyectar CNAME institucional
         run: echo "blog.culturaydesarrollo.org" > ./dist/CNAME

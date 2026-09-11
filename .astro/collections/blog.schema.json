@@ -18,13 +18,19 @@
     "author": {
       "type": "string"
     },
+    "authorSlug": {
+      "type": "string"
+    },
     "authorImage": {
       "default": "/images/author-default.svg",
       "type": "string"
     },
     "authorBio": {
-      "default": "Biografía del autor próximamente.",
       "type": "string"
+    },
+    "featured": {
+      "default": false,
+      "type": "boolean"
     },
     "category": {
       "type": "array",

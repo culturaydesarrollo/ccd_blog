@@ -9,11 +9,22 @@ const blog = defineCollection({
     pubDate: z.coerce.date(),
     image: image().optional(),
     author: z.string(),
+    authorSlug: z.string().optional(),
     authorImage: z.string().default('/images/author-default.svg'),
-    authorBio: z.string().default('Biografía del autor próximamente.'),
+    authorBio: z.string().optional(),
+    featured: z.boolean().default(false),
     category: z.array(z.string()),
     tags: z.array(z.string()).default([]),
   }),
 });
 
-export const collections = { blog };
+const autores = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/autores' }),
+  schema: z.object({
+    name: z.string(),
+    slug: z.string().optional(),
+    image: z.string().default('/images/author-default.svg'),
+  }),
+});
+
+export const collections = { blog, autores };

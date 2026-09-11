@@ -3,8 +3,8 @@ title: "Próximos Anuncios Institucionales"
 description: "Avances y novedades de las actividades de la corporación."
 pubDate: "2026-09-05"
 author: "Corporación Cultura y Desarrollo"
+authorSlug: "corporacion-cultura-y-desarrollo"
 authorImage: "/images/ccd-auth.svg"
-authorBio: "Organización dedicada a promover la cultura, la participación comunitaria y el desarrollo territorial."
 category: ["Proyectos"]
 tags: ["Anuncios", "Novedades"]
 ---

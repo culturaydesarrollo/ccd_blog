@@ -8,77 +8,65 @@ import { slugify } from '../lib/slugify';
 
 // 1. Force Astro to fetch all entries inside the src/content/blog/ folder
 const posts = await getCollection('blog');
+const authors = await getCollection('autores');
+const authorBioBySlug = new Map(authors.map((author) => [author.id, author.body || 'Biografía del autor próximamente.']));
 
 // 2. Sort the articles by publication date (most recent first)
-const sortedPosts = posts.sort(
-  (a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf()
-);
+const sortedPosts = posts
+  .map((post) => ({
+    ...post,
+    searchText: [
+      post.data.title,
+      post.data.description,
+      post.data.category.join(' '),
+      post.data.tags.join(' '),
+      post.body || '',
+    ]
+      .join(' ')
+      .toLowerCase()
+      .replace(/[#[\]()*_`~]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim(),
+  }))
+  .sort((a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf());
+
+const authorList = [...new Set(sortedPosts.map((post) => post.data.author))].sort((a, b) => a.localeCompare(b));
+const featuredPosts = sortedPosts.filter((post) => post.data.featured).slice(0, 3);
+const regularPosts = sortedPosts.filter((post) => !post.data.featured);
 ---
 
 <Layout
     title="Blog | Cultura y Desarrollo"
     description="Espacio de difusión, análisis y gestión cultural comunitaria."
 >
-<Fragment slot="head">
-    <style>
-        .author-trigger {
-            background: transparent;
-            border: 0;
-            cursor: pointer;
-            padding: 0;
-        }
-        .author-trigger img {
-            transition: transform 0.2s ease;
-        }
-        .author-trigger:hover img, .author-trigger:focus-visible img {
-            transform: scale(1.1);
-        }
-        .author-modal {
-            border: 0;
-            border-radius: 10px;
-            box-shadow: 0 18px 50px rgba(36, 19, 15, 0.24);
-            color: var(--color-text);
-            max-width: 420px;
-            padding: 2rem;
-            width: calc(100% - 2rem);
-        }
-        .author-modal::backdrop {
-            background: rgba(36, 19, 15, 0.45);
-        }
-        .author-modal h2 {
-            color: var(--color-primary);
-            margin: 0;
-        }
-        .author-modal-heading {
-            align-items: center;
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 0.75rem;
-        }
-        .author-modal-image {
-            border-radius: 50%;
-            flex: 0 0 72px;
-            height: 72px;
-            object-fit: cover;
-            width: 72px;
-        }
-        .author-modal-close {
-            background: var(--color-primary);
-            border: 0;
-            border-radius: 4px;
-            color: #ffffff;
-            cursor: pointer;
-            margin-top: 1rem;
-            padding: 0.6rem 1rem;
-        }
-    </style>
-</Fragment>
-
-    <div class="blog-container" style="padding-top: 95px; max-width: 850px; margin: 0 auto; padding-left: 1.5rem; padding-right: 1.5rem;">
-        <header style="margin-bottom: 3rem; margin-top: 1.5rem;">
-            <h1 style="color: var(--color-primary); font-size: 2.3rem; margin-bottom: 0.5rem;">Blog de Cultura y Desarrollo</h1>
-            <p style="color: #667085; margin: 0;">Espacio de difusión, análisis y gestión cultural comunitaria.</p>
+    <div class="blog-container">
+        <header class="blog-header">
+            <h1>Blog de Cultura y Desarrollo</h1>
+            <p>Espacio de difusión, análisis y gestión cultural comunitaria.</p>
         </header>
+
+        <div class="blog-search-wrap" aria-label="Buscar artículos del blog">
+            <label class="blog-search-label" for="blog-search-input">Buscar en el blog</label>
+            <div class="blog-search-controls">
+                <input
+                    id="blog-search-input"
+                    class="blog-search-input"
+                    type="search"
+                    placeholder="Título, tema o contenido..."
+                    autocomplete="off"
+                />
+                <label class="blog-filter-label" for="blog-author-filter">Autor</label>
+                <select id="blog-author-filter" class="blog-author-filter" aria-label="Filtrar por autor">
+                    <option value="">Todos los autores</option>
+                    {authorList.map((author) => (
+                        <option value={author}>{author}</option>
+                    ))}
+                </select>
+            </div>
+            <p id="blog-search-count" class="blog-search-count" aria-live="polite">
+                {sortedPosts.length} artículo{sortedPosts.length === 1 ? '' : 's'}
+            </p>
+        </div>
 
         <main>
             {sortedPosts.length === 0 ? (
@@ -86,57 +74,125 @@ const sortedPosts = posts.sort(
                     <p style="margin: 0; color: #667085;">No se encontraron artículos en la carpeta src/content/blog/</p>
                 </div>
             ) : (
-                <ul style="list-style: none; padding: 0; margin: 0;">
-                    {sortedPosts.map(post => (
-                        <li class="post-item" style="background: var(--color-bg-alt); padding: 2rem; margin-bottom: 1.5rem; border-radius: 8px; border-left: 5px solid var(--color-secondary);">
-                            <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 0.35rem; margin-bottom: 0.75rem;">
-                                <span style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: #718096;">
-                                    <button class="author-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`}>
-                                        <img src={post.data.authorImage} alt={`Foto de ${post.data.author}`} width="28" height="28" style="border-radius: 50%; object-fit: cover; vertical-align: middle;" />
-                                    </button>
-                                    <span>Por {post.data.author}</span>
-                                </span>
-                                <time style="font-size: 0.85rem; color: #718096;">
-                                    {formatDate(post.data.pubDate)}
-                                </time>
+                <>
+                    {featuredPosts.length > 0 && (
+                        <section class="featured-section" aria-labelledby="featured-heading">
+                            <div class="featured-header">
+                                <h2 id="featured-heading">Artículos destacados</h2>
+                                <p>Temas estratégicos, convocatorias y contenidos de mayor relevancia editorial.</p>
                             </div>
-                            <span style="display: inline-flex; gap: 0.5rem; flex-wrap: wrap; font-size: 0.85rem; font-weight: 600; color: var(--color-secondary); text-transform: uppercase;">
-                                {post.data.category.map((category, index) => (
-                                    <span style="display: inline-flex; gap: 0.5rem;">
-                                        {index > 0 && <span aria-hidden="true">/</span>}
-                                        <a href={`/categorias/${slugify(category)}/`} style="color: inherit; text-decoration: none;">{category}</a>
-                                    </span>
+                            <div class="featured-grid">
+                                {featuredPosts.map(post => (
+                                    <article class="featured-card" data-search={post.searchText} data-author={post.data.author}>
+                                        <span class="featured-badge">Destacado</span>
+                                        <div class="featured-meta">
+                                            <span class="featured-author-line">
+                                                <button class="author-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>
+                                                    <img class="post-author-avatar" src={post.data.authorImage} alt={`Foto de ${post.data.author}`} width="28" height="28" />
+                                                </button>
+                                                <span>Por {post.data.author}</span>
+                                            </span>
+                                            <time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+                                        </div>
+                                        <h3>
+                                            <a href={`/${post.id}/`}>{post.data.title}</a>
+                                        </h3>
+                                        <p>{post.data.description}</p>
+                                        <a href={`/${post.id}/`} class="read-more">Leer artículo →</a>
+                                        <dialog class="author-modal" id={`author-modal-${post.id}`}>
+                                            <div class="author-modal-heading">
+                                                <img class="author-modal-image" src={post.data.authorImage} alt={`Foto de ${post.data.author}`} width="72" height="72" />
+                                                <h2>{post.data.author}</h2>
+                                            </div>
+                                            <p>{authorBioBySlug.get(post.data.authorSlug ?? '') ?? post.data.authorBio ?? 'Biografía del autor próximamente.'}</p>
+                                            <button class="author-modal-close" type="button">Cerrar</button>
+                                        </dialog>
+                                    </article>
                                 ))}
-                            </span>
-                            
-                            <h2 style="margin: 0.5rem 0; font-size: 1.6rem;">
-                                <a href={`/${post.id}/`} style="color: var(--color-primary); text-decoration: none; font-weight: 700;">
-                                    {post.data.title}
-                                </a>
-                            </h2>
-                            
-                            <p style="margin: 0 0 1rem 0; color: var(--color-text);">{post.data.description}</p>
-                            
-                            <a class="read-more" href={`/${post.id}/`} style="font-weight: 600; font-size: 0.95rem;">
-                                Leer artículo →
-                            </a>
-                            <dialog class="author-modal" id={`author-modal-${post.id}`}>
-                                <div class="author-modal-heading">
-                                    <img class="author-modal-image" src={post.data.authorImage} alt={`Foto de ${post.data.author}`} width="72" height="72" />
-                                    <h2>{post.data.author}</h2>
+                            </div>
+                        </section>
+                    )}
+
+                    <div id="blog-empty-state" class="blog-empty-state" hidden>
+                        <p>No se encontraron artículos que coincidan con tu búsqueda.</p>
+                    </div>
+                    <ul class="posts-list">
+                        {regularPosts.map(post => (
+                            <li class="post-item" data-search={post.searchText} data-author={post.data.author}>
+                                <div class="post-meta-inline">
+                                    <span class="post-author-line">
+                                        <button class="author-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>
+                                            <img class="post-author-avatar" src={post.data.authorImage} alt={`Foto de ${post.data.author}`} width="28" height="28" />
+                                        </button>
+                                        <span>Por {post.data.author}</span>
+                                    </span>
+                                    <time class="post-date" datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
                                 </div>
-                                <p>{post.data.authorBio}</p>
-                                <button class="author-modal-close" type="button">Cerrar</button>
-                            </dialog>
-                        </li>
-                    ))}
-                </ul>
+                                <span class="post-category-list">
+                                    {post.data.category.map((category, index) => (
+                                        <span>
+                                            {index > 0 && <span aria-hidden="true">/</span>}
+                                            <a class="post-category-item" href={`/categorias/${slugify(category)}/`}>{category}</a>
+                                        </span>
+                                    ))}
+                                </span>
+                                
+                                <h2>
+                                    <a class="post-title-link" href={`/${post.id}/`}>{post.data.title}</a>
+                                </h2>
+                                
+                                <p class="post-description">{post.data.description}</p>
+                                
+                                <a class="read-more" href={`/${post.id}/`}>Leer artículo →</a>
+                                <dialog class="author-modal" id={`author-modal-${post.id}`}>
+                                    <div class="author-modal-heading">
+                                        <img class="author-modal-image" src={post.data.authorImage} alt={`Foto de ${post.data.author}`} width="72" height="72" />
+                                        <h2>{post.data.author}</h2>
+                                    </div>
+                                    <p>{authorBioBySlug.get(post.data.authorSlug ?? '') ?? post.data.authorBio ?? 'Biografía del autor próximamente.'}</p>
+                                    <button class="author-modal-close" type="button">Cerrar</button>
+                                </dialog>
+                            </li>
+                        ))}
+                    </ul>
+                </>
             )}
         </main>
         <ContactForm postTitle="Consulta general del blog" />
         <BackToTop />
     </div>
     <script is:inline>
+        const searchInput = document.getElementById('blog-search-input');
+        const authorFilter = document.getElementById('blog-author-filter');
+        const posts = Array.from(document.querySelectorAll('.post-item, .featured-card'));
+        const emptyState = document.getElementById('blog-empty-state');
+        const countEl = document.getElementById('blog-search-count');
+
+        const applyFilters = () => {
+            const query = (searchInput?.value || '').trim().toLowerCase();
+            const selectedAuthor = authorFilter?.value || '';
+            let visibleCount = 0;
+
+            posts.forEach((post) => {
+                const haystack = (post.dataset.search || post.textContent || '').toLowerCase();
+                const matchesQuery = !query || haystack.includes(query);
+                const matchesAuthor = !selectedAuthor || (post.dataset.author || '') === selectedAuthor;
+                const match = matchesQuery && matchesAuthor;
+                post.hidden = !match;
+                if (match) visibleCount += 1;
+            });
+
+            if (emptyState) emptyState.hidden = visibleCount !== 0;
+            if (countEl) {
+                const label = visibleCount === 1 ? 'artículo' : 'artículos';
+                const baseLabel = `${posts.length} ${label}`;
+                countEl.textContent = query || selectedAuthor ? `${visibleCount} ${label} coincidentes` : baseLabel;
+            }
+        };
+
+        searchInput?.addEventListener('input', applyFilters);
+        authorFilter?.addEventListener('change', applyFilters);
+
         document.querySelectorAll('[data-author-modal]').forEach((trigger) => {
             const modal = document.getElementById(trigger.dataset.authorModal);
             const closeButton = modal?.querySelector('.author-modal-close');

@@ -1,6 +1,6 @@
 ---
 // src/pages/[slug].astro - Forzar compilación limpia Astro v5
-import { getCollection, render } from 'astro:content'; // <-- IMPORTACIÓN CORRECTA DE ASTRO v5
+import { getCollection, getEntry, render } from 'astro:content'; // <-- IMPORTACIÓN CORRECTA DE ASTRO v5
 import { Image } from 'astro:assets';
 import ContactForm from '../components/ContactForm.astro';
 import BackToTop from '../components/BackToTop.astro';
@@ -29,6 +29,10 @@ export async function getStaticPaths() {
 }
 
 const { entry, prevPost, nextPost } = Astro.props;
+
+const authorEntry = entry.data.authorSlug ? await getEntry('autores', entry.data.authorSlug) : undefined;
+const authorBio = authorEntry?.body || entry.data.authorBio || 'Biografía del autor próximamente.';
+const authorImage = entry.data.authorImage || authorEntry?.data.image || '/images/author-default.svg';
 
 // 2. SOLUCIÓN COMPATIBLE CON ASTRO v5: Renderizado externo y asíncrono
 const { Content } = await render(entry);
@@ -100,8 +104,12 @@ const breadcrumbSchema = {
         .article-container {
             max-width: 750px;
             margin: 0 auto;
-            padding: 3rem 1.5rem;
+            padding: 3rem 1.5rem 0;
             padding-top: 95px;
+        }
+        .article-header {
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 1rem;
         }
         .category-badge {
             background-color: var(--color-primary);
@@ -112,22 +120,67 @@ const breadcrumbSchema = {
             font-weight: 600;
             display: inline-block;
         }
-        h1 {
+        .article-header h1 {
             color: var(--color-primary);
-            font-size: 2.4rem;
+            font-size: clamp(2.1rem, 4vw, 2.7rem);
             line-height: 1.2;
             margin: 0.75rem 0;
         }
         .meta-info {
+            align-items: center;
             color: #718096;
-            font-size: 0.9rem;
             display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            margin-bottom: 1.25rem;
+        }
+        .meta-author {
+            align-items: center;
+            display: inline-flex;
+            gap: 0.6rem;
+        }
+        .meta-author img {
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .meta-divider {
+            color: #a0a8b5;
         }
         .article-content {
             margin-top: 2rem;
             font-size: 1.1rem;
+        }
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 0 0 1.5rem;
+        }
+        .tag-item {
+            background: var(--color-bg-alt);
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            color: var(--color-text);
+            font-size: 0.85rem;
+            padding: 0.3rem 0.7rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .tag-item:hover,
+        .tag-item:focus-visible {
+            border-color: var(--color-secondary);
+            color: var(--color-secondary);
+            text-decoration: none;
+        }
+        .featured-image {
+            border-radius: 8px;
+            display: block;
+            height: auto;
+            margin-top: 1rem;
+            max-height: 380px;
+            object-fit: cover;
+            width: 100%;
         }
         :global(.article-inline-image) {
             margin: 0 auto 1.5rem;
@@ -141,6 +194,29 @@ const breadcrumbSchema = {
             width: 100%;
         }
         :global(.article-inline-image figcaption) {
+            color: #718096;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+        :global(.article-video) {
+            margin: 0 auto 1.5rem;
+            max-width: 720px;
+        }
+        :global(.article-video iframe),
+        :global(.article-video video) {
+            aspect-ratio: 16 / 9;
+            border: 0;
+            border-radius: 8px;
+            display: block;
+            height: auto;
+            width: 100%;
+        }
+        :global(.article-video video) {
+            background: #1f2933;
+            object-fit: contain;
+        }
+        :global(.article-video figcaption) {
             color: #718096;
             font-size: 0.9rem;
             margin-top: 0.5rem;
@@ -199,8 +275,14 @@ const breadcrumbSchema = {
             min-height: 1.2em;
             text-align: center;
         }
-        
-        /* DISEÑO DE BOTONES DE NAVEGACIÓN CRONOLÓGICA */
+        .article-comment-cta {
+            margin: 1.25rem 0 0;
+            text-align: center;
+        }
+        .article-comment-cta a {
+            color: var(--color-secondary);
+            font-weight: 700;
+        }
         .pagination-container {
             display: flex;
             justify-content: space-between;
@@ -241,11 +323,9 @@ const breadcrumbSchema = {
             text-align: right;
             align-items: flex-end;
         }
-
-        /* DISEÑO DEL BOTÓN DE HISTORIAL INTELIGENTE */
         .history-container {
             margin-top: 2rem;
-            display: none; 
+            display: none;
             margin-bottom: 1.5rem;
         }
         .history-btn {
@@ -258,23 +338,110 @@ const breadcrumbSchema = {
             text-decoration: none;
             transition: all 0.2s;
         }
-
+        .rating-wrap {
+            border-top: 1px solid var(--color-border);
+            margin-top: 2.5rem;
+            padding-top: 1.75rem;
+        }
+        .rating-head {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+        .rating-title {
+            color: var(--color-primary);
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        .rating-summary {
+            color: var(--color-muted);
+            font-size: 0.9rem;
+        }
+        .star-rating {
+            display: inline-flex;
+            gap: 0.35rem;
+        }
+        .star-button {
+            background: transparent;
+            border: 0;
+            color: #d1d5db;
+            cursor: pointer;
+            font-size: 1.8rem;
+            line-height: 1;
+            padding: 0;
+            transition: transform 0.15s ease, color 0.15s ease;
+        }
+        .star-button:hover,
+        .star-button:focus-visible {
+            color: #f4b740;
+            transform: scale(1.08);
+        }
+        .star-button.is-active {
+            color: #f4b740;
+        }
+        .rating-note {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            margin-top: 0.75rem;
+        }
         .related-section {
             margin-top: 3rem;
             padding-top: 2rem;
             border-top: 2px solid var(--color-border);
         }
+        .related-grid {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+        .related-card {
+            background: var(--color-bg-alt);
+            border-radius: 6px;
+            border-top: 3px solid var(--color-secondary);
+            padding: 1.25rem;
+        }
+        .related-card h3 {
+            font-size: 1.1rem;
+            margin: 0 0 0.5rem;
+        }
+        .related-card p {
+            font-size: 0.9rem;
+            margin: 0 0 0.75rem;
+        }
         .author-trigger {
+            align-items: center;
             background: transparent;
             border: 0;
             cursor: pointer;
+            display: inline-flex;
+            flex-direction: column;
+            gap: 0.15rem;
             padding: 0;
         }
+        .author-trigger::after {
+            color: var(--color-secondary);
+            content: 'ver bio';
+            font-size: 0.62rem;
+            font-weight: 700;
+        }
+        .author-trigger:hover,
+        .author-trigger:focus-visible {
+            background: transparent;
+        }
+        .author-trigger:hover::after,
+        .author-trigger:focus-visible::after {
+            text-decoration: underline;
+        }
         .author-trigger img {
+            display: block;
             transition: transform 0.2s ease;
         }
         .author-trigger:hover img, .author-trigger:focus-visible img {
-            transform: scale(1.1);
+            transform: none;
         }
         .author-modal {
             border: 0;
@@ -322,7 +489,7 @@ const breadcrumbSchema = {
         <div id="current-post-data" data-id={entry.id} data-title={entry.data.title} style="display:none;"></div>
 
         <article>
-            <header style="border-bottom: 1px solid var(--color-border); padding-bottom: 1rem;">
+            <header class="article-header">
                 <span class="category-badge">
                     {entry.data.category.map((category, index) => (
                         <span>
@@ -333,28 +500,21 @@ const breadcrumbSchema = {
                 </span>
                 <h1>{entry.data.title}</h1>
                 
-                <div class="meta-info" style="align-items: center;">
-                    <span style="display: inline-flex; align-items: center; gap: 0.6rem;">
-                        <button class="author-trigger" type="button" data-author-modal="author-modal" aria-label={`Ver biografía de ${entry.data.author}`}>
-                            <img src={entry.data.authorImage} alt={`Foto de ${entry.data.author}`} width="44" height="44" style="border-radius: 50%; object-fit: cover;" />
+                <div class="meta-info">
+                    <span class="meta-author">
+                        <button class="author-trigger" type="button" data-author-modal="author-modal" aria-label={`Ver biografía de ${entry.data.author}`} title={`Abrir biografía de ${entry.data.author}`}>
+                            <img src={authorImage} alt={`Foto de ${entry.data.author}`} width="44" height="44" />
                         </button>
                         <span>Por <strong>{entry.data.author}</strong></span>
                     </span>
-                    <span>•</span>
+                    <span class="meta-divider" aria-hidden="true">•</span>
                     <time>{formatDate(entry.data.pubDate)}</time>
                 </div>
 
-                {/* ETIQUETAS INTERACTIVAS */}
                 {entry.data.tags && entry.data.tags.length > 0 && (
-                    <div class="tag-list" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                    <div class="tag-list">
                         {entry.data.tags.map(tag => (
-                            <a 
-                                href={`/tags/${slugify(tag)}/`} 
-                                class="tag-item" 
-                                style="background: var(--color-bg-alt); padding: 0.3rem 0.7rem; border-radius: 4px; font-size: 0.85rem; color: var(--color-text); text-decoration: none; border: 1px solid var(--color-border); transition: all 0.2s;"
-                                onmouseover="this.style.borderColor='var(--color-secondary)'; this.style.color='var(--color-secondary)';"
-                                onmouseout="this.style.borderColor='var(--color-border)'; this.style.color='var(--color-text)';"
-                            >
+                            <a href={`/tags/${slugify(tag)}/`} class="tag-item">
                                 #{tag}
                             </a>
                         ))}
@@ -362,22 +522,42 @@ const breadcrumbSchema = {
                 )}
 
                 {entry.data.image && (
-                    <Image src={entry.data.image} alt={entry.data.title} style="width: 100%; height: auto; border-radius: 8px; margin-top: 1rem; max-height: 380px; object-fit: cover;" />
+                    <Image src={entry.data.image} alt={entry.data.title} class="featured-image" />
                 )}
             </header>
 
             <div class="article-content">
                 <Content />
             </div>
+
+            <p class="article-comment-cta">
+                <a href="#contacto">Comenta este artículo...</a>
+            </p>
+
+            <section class="rating-wrap" aria-label="Valoración del artículo">
+                <div class="rating-head">
+                    <h2 class="rating-title">¿Te resultó útil este artículo?</h2>
+                    <span class="rating-summary" id="rating-summary">Tu valoración</span>
+                </div>
+                <div class="star-rating" role="radiogroup" aria-label="Califica este artículo">
+                    {[1,2,3,4,5].map((star) => (
+                        <button class="star-button" type="button" data-value={star} aria-label={`Calificar con ${star} estrellas`}>
+                            ★
+                        </button>
+                    ))}
+                </div>
+                <p class="rating-note" id="rating-note">Tu valoración ayuda a identificar contenidos más útiles para la comunidad.</p>
+            </section>
+
             <div class="article-post-share" id="post-share" aria-label="Compartir post"></div>
         </article>
 
         <dialog class="author-modal" id="author-modal">
             <div class="author-modal-heading">
-                <img class="author-modal-image" src={entry.data.authorImage} alt={`Foto de ${entry.data.author}`} width="72" height="72" />
+                <img class="author-modal-image" src={authorImage} alt={`Foto de ${entry.data.author}`} width="72" height="72" />
                 <h2>{entry.data.author}</h2>
             </div>
-            <p>{entry.data.authorBio}</p>
+            <p>{authorBio}</p>
             <button class="author-modal-close" type="button">Cerrar</button>
         </dialog>
 
@@ -414,11 +594,11 @@ const breadcrumbSchema = {
         {relatedPosts.length > 0 && (
             <section class="related-section">
                 <h2 style="color: var(--color-primary); font-size: 1.4rem; margin-bottom: 1rem;">Artículos relacionados</h2>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+                <div class="related-grid">
                     {relatedPosts.map(post => (
-                        <div style="background: var(--color-bg-alt); padding: 1.25rem; border-radius: 6px; border-top: 3px solid var(--color-secondary);">
-                            <h3 style="margin: 0 0 0.5rem 0; font-size: 1.1rem;"><a href={`/${post.id}/`}>{post.data.title}</a></h3>
-                            <p style="font-size: 0.9rem; margin: 0 0 0.75rem 0;">{post.data.description}</p>
+                        <div class="related-card">
+                            <h3><a href={`/${post.id}/`}>{post.data.title}</a></h3>
+                            <p>{post.data.description}</p>
                             <a href={`/${post.id}/`} style="font-size: 0.85rem; font-weight: 600;">Leer más →</a>
                         </div>
                     ))}
@@ -436,6 +616,52 @@ const breadcrumbSchema = {
 
     {/* SCRIPT CON COMILLAS INVERTIDAS DE JAVASCRIPT */}
     <script is:inline>
+        const articleId = document.getElementById('current-post-data')?.dataset.id || 'article';
+        const ratingSummary = document.getElementById('rating-summary');
+        const ratingNote = document.getElementById('rating-note');
+        const contactContext = document.querySelector('input[name="article_context"]');
+        const contactContextLabel = document.getElementById('contact-context');
+        const contactRating = document.getElementById('contact-rating');
+        const stars = Array.from(document.querySelectorAll('.star-button'));
+        const storageKey = `ccd-rating-${articleId}`;
+
+        const setContactRating = (value) => {
+            const starsValue = `${'★'.repeat(value)}${'☆'.repeat(5 - value)} (${value}/5)`;
+            if (contactRating) contactRating.value = starsValue;
+            if (contactContext) contactContext.value = `${contactContext.dataset.base} · Valoración: ${starsValue}`;
+            if (contactContextLabel) contactContextLabel.textContent = `${contactContextLabel.dataset.base} · Valoración: ${starsValue}`;
+        };
+
+        const setActiveStars = (value) => {
+            stars.forEach((star) => {
+                const starValue = Number(star.dataset.value);
+                star.classList.toggle('is-active', starValue <= value);
+                star.setAttribute('aria-pressed', String(starValue <= value));
+            });
+        };
+
+        const savedRating = Number(window.localStorage.getItem(storageKey) || 0);
+        if (savedRating > 0) {
+            setActiveStars(savedRating);
+            setContactRating(savedRating);
+            if (ratingNote) ratingNote.textContent = `Gracias por valorar este artículo con ${savedRating} estrella${savedRating > 1 ? 's' : ''}.`;
+        }
+
+        stars.forEach((star) => {
+            star.addEventListener('click', () => {
+                const value = Number(star.dataset.value || 0);
+                window.localStorage.setItem(storageKey, String(value));
+                setActiveStars(value);
+                setContactRating(value);
+                if (ratingSummary) {
+                    ratingSummary.textContent = `${value}/5 · gracias por tu valoración`;
+                }
+                if (ratingNote) {
+                    ratingNote.textContent = `Gracias por valorar este artículo con ${value} estrella${value > 1 ? 's' : ''}.`;
+                }
+            });
+        });
+
         const sharePageUrl = window.location.href;
         const sharePageTitle = document.title;
 

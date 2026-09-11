@@ -3,8 +3,8 @@ title: "Convocatoria Abierta de la Corporación Cultura y Desarrollo"
 description: "Participa en esta convocatoria y publica en el espacio de nuestras publicaciones online."
 pubDate: "2026-09-10"
 author: "Corporación Cultura y Desarrollo"
+authorSlug: "corporacion-cultura-y-desarrollo"
 authorImage: "/images/ccd-auth.svg"
-authorBio: "Organización dedicada a promover la cultura, la participación comunitaria y el desarrollo territorial."
 category: ["Convocatorias", "Proyectos"]
 tags: ["Anuncios", "Novedades"]
 ---

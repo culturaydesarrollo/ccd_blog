@@ -3,8 +3,9 @@ title: "El patrimonio no se conserva: se vive"
 description: "El patrimonio cultural debe ser motor vivo de desarrollo social y económico para los protagonistas de su gestión."
 pubDate: "2026-09-08"
 author: "Héctor Galeano David"
+authorSlug: "hector-galeano-david"
 authorImage: "/images/hector-galeano.jpg"
-authorBio: "Héctor Galeano David es internacionalista, docente universitario e investigador con 25 años de experiencia en Relaciones Internacionales. Analista internacional para medios nacionales e internacionales. Miembro de la Corporación Cultura y Desarrollo. Creador y conductor de Caribe Global."
+featured: true
 category:
   - "Cultura"
   - "Política Cultural"

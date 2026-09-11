@@ -1,28 +1,48 @@
 ---
 const { postTitle, postAuthor, postDate } = Astro.props;
 const messageHeader = postAuthor && postDate
-  ? `Artículo: ${postTitle}\nAutor: ${postAuthor}\nFecha de publicación: ${postDate}\n----------------------------------------`
+  ? `Referencia: ${postTitle} · ${postAuthor} · ${postDate}`
   : '';
+const isGeneralContact = postTitle === 'Consulta general del blog';
 ---
 
 <section class="contact-section" id="contacto" aria-labelledby="contact-title">
-  <h2 id="contact-title">Escríbenos sobre este artículo</h2>
+  <h2 id="contact-title">{isGeneralContact ? 'Ponte en contacto con nosotros' : 'Escríbenos sobre este artículo'}</h2>
   <p class="contact-intro">Envíanos tus comentarios, preguntas o propuestas relacionadas con este contenido.</p>
 
-  <form class="contact-form" action="https://formspree.io/f/mkoearok" method="POST">
+  <form class="contact-form" action="https://formspree.io/f/mkoearok" method="POST" novalidate>
     <input type="hidden" name="_subject" value={`Mensaje sobre: ${postTitle}`} />
     <input type="hidden" name="article" value={postTitle} />
+    {messageHeader && <input type="hidden" name="article_context" value={messageHeader} data-base={messageHeader} />}
+    {messageHeader && <input id="contact-rating" type="hidden" name="rating" value="Sin valoración" />}
+    <div class="visually-hidden">
+      <label for="website">No rellenes este campo si eres humano</label>
+      <input id="website" name="website" type="text" autocomplete="off" tabindex="-1" />
+    </div>
 
     <label for="contact-name">Nombre</label>
-    <input id="contact-name" name="name" type="text" autocomplete="name" required />
+    <input id="contact-name" name="name" type="text" autocomplete="name" required minlength="2" aria-describedby="contact-name-help" />
+    <small id="contact-name-help" class="field-help">Escribe tu nombre o la organización que representas.</small>
 
     <label for="contact-email">Correo electrónico</label>
-    <input id="contact-email" name="email" type="email" autocomplete="email" required />
+    <input id="contact-email" name="email" type="email" autocomplete="email" required aria-describedby="contact-email-help" />
+    <small id="contact-email-help" class="field-help">Usaremos este correo solo para responder tu mensaje.</small>
 
     <label for="contact-message">Mensaje</label>
-    <textarea id="contact-message" name="message" rows="5" required>{messageHeader ? `${messageHeader}\n\n` : ''}</textarea>
+    {messageHeader && (
+      <small id="contact-context" class="message-context" data-base={messageHeader} aria-label="Referencia del artículo">
+        Referencia: {postTitle} · {postAuthor} · {postDate}
+      </small>
+    )}
+    <textarea id="contact-message" name="message" rows="5" required minlength="20" aria-describedby="contact-message-help" placeholder="Escribe aquí tu comentario o pregunta..."></textarea>
+    <small id="contact-message-help" class="field-help">Escribe al menos 20 caracteres para enviar tu mensaje.</small>
+
+    <p class="form-privacy">
+      Tu mensaje se enviará por correo electrónico. No usamos estos datos para fines publicitarios ni los compartimos con terceros.
+    </p>
 
     <button type="submit">Enviar correo</button>
+    <p class="form-status" aria-live="polite" role="status"></p>
   </form>
 </section>
 
@@ -74,6 +94,47 @@ const messageHeader = postAuthor && postDate
     outline: 2px solid color-mix(in srgb, var(--color-secondary) 25%, transparent);
   }
 
+  .contact-form input[aria-invalid='true'],
+  .contact-form textarea[aria-invalid='true'] {
+    border-color: #b42318;
+    box-shadow: 0 0 0 2px rgba(180, 35, 24, 0.08);
+  }
+
+  .field-help {
+    color: #667085;
+    font-size: 0.8rem;
+    margin-top: -0.2rem;
+  }
+
+  .message-context {
+    color: #667085;
+    font-size: 0.78rem;
+    line-height: 1.4;
+    margin-top: -0.2rem;
+  }
+
+  .contact-form textarea {
+    font-size: 1.05rem;
+    line-height: 1.55;
+  }
+
+  .form-privacy {
+    background: var(--color-bg-alt);
+    border-left: 3px solid var(--color-secondary);
+    color: var(--color-text);
+    font-size: 0.82rem;
+    line-height: 1.6;
+    margin: 0.35rem 0 0;
+    padding: 0.7rem 0.85rem;
+  }
+
+  .form-status {
+    color: var(--color-primary);
+    font-size: 0.9rem;
+    min-height: 1.25rem;
+    margin: 0.25rem 0 0;
+  }
+
   .contact-form button {
     background: var(--color-primary);
     border: 0;
@@ -87,7 +148,63 @@ const messageHeader = postAuthor && postDate
     width: fit-content;
   }
 
-  .contact-form button:hover {
+  .contact-form button:hover,
+  .contact-form button:focus-visible {
     background: var(--color-secondary);
   }
+
+  .visually-hidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
 </style>
+
+<script>
+  const form = document.currentScript?.previousElementSibling?.querySelector('form.contact-form');
+  if (form && form instanceof HTMLFormElement) {
+    const status = form.querySelector('.form-status');
+    const honeypot = form.querySelector('#website');
+    const inputs = form.querySelectorAll('input[required], textarea[required]');
+
+    const setFieldState = (field) => {
+      const value = field.value.trim();
+      const isTooShort = field.minLength > 0 && value.length > 0 && value.length < field.minLength;
+      const isEmpty = !value;
+      const hasError = isEmpty || isTooShort || (field.type === 'email' && !field.validity.valid);
+      field.setAttribute('aria-invalid', hasError ? 'true' : 'false');
+      return !hasError;
+    };
+
+    inputs.forEach((input) => {
+      input.addEventListener('input', () => setFieldState(input));
+    });
+
+    form.addEventListener('submit', (event) => {
+      let isValid = true;
+
+      inputs.forEach((input) => {
+        if (!setFieldState(input)) isValid = false;
+      });
+
+      if (honeypot && honeypot.value.trim()) {
+        event.preventDefault();
+        if (status) status.textContent = 'El formulario no pudo enviarse. Inténtalo de nuevo.';
+        return;
+      }
+
+      if (!isValid) {
+        event.preventDefault();
+        if (status) status.textContent = 'Revisa los campos obligatorios antes de enviar el mensaje.';
+      } else if (status) {
+        status.textContent = 'Mensaje listo para enviar.';
+      }
+    });
+  }
+</script>
