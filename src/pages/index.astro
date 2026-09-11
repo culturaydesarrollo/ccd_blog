@@ -1,10 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
-import BlogNavbar from '../components/BlogNavbar.astro';
 import ContactForm from '../components/ContactForm.astro';
 import BackToTop from '../components/BackToTop.astro';
+import Layout from '../layouts/Layout.astro';
+import { formatDate } from '../lib/formatDate';
 import { slugify } from '../lib/slugify';
-import '../styles/global.css';
 
 // 1. Force Astro to fetch all entries inside the src/content/blog/ folder
 const posts = await getCollection('blog');
@@ -15,12 +15,11 @@ const sortedPosts = posts.sort(
 );
 ---
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Blog | Cultura y Desarrollo</title>
+<Layout
+    title="Blog | Cultura y Desarrollo"
+    description="Espacio de difusión, análisis y gestión cultural comunitaria."
+>
+<Fragment slot="head">
     <style>
         .author-trigger {
             background: transparent;
@@ -73,11 +72,7 @@ const sortedPosts = posts.sort(
             padding: 0.6rem 1rem;
         }
     </style>
-</head>
-<body id="top">
-    
-    <!-- Floating Navbar component -->
-    <BlogNavbar />
+</Fragment>
 
     <div class="blog-container" style="padding-top: 95px; max-width: 850px; margin: 0 auto; padding-left: 1.5rem; padding-right: 1.5rem;">
         <header style="margin-bottom: 3rem; margin-top: 1.5rem;">
@@ -102,11 +97,7 @@ const sortedPosts = posts.sort(
                                     <span>Por {post.data.author}</span>
                                 </span>
                                 <time style="font-size: 0.85rem; color: #718096;">
-                                    {new Date(post.data.pubDate).toLocaleDateString('es-ES', {
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric'
-                                    })}
+                                    {formatDate(post.data.pubDate)}
                                 </time>
                             </div>
                             <span style="display: inline-flex; gap: 0.5rem; flex-wrap: wrap; font-size: 0.85rem; font-weight: 600; color: var(--color-secondary); text-transform: uppercase;">
@@ -158,5 +149,4 @@ const sortedPosts = posts.sort(
             });
         });
     </script>
-</body>
-</html>
+</Layout>

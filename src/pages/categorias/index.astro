@@ -1,9 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
-import BlogNavbar from '../../components/BlogNavbar.astro';
 import BackToTop from '../../components/BackToTop.astro';
+import Layout from '../../layouts/Layout.astro';
 import { slugify } from '../../lib/slugify';
-import '../../styles/global.css';
 
 const posts = await getCollection('blog');
 const categories = [...new Map(
@@ -13,16 +12,10 @@ const categories = [...new Map(
 )].sort(([, firstName], [, secondName]) => firstName.localeCompare(secondName, 'es'));
 ---
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Categorías | Blog Cultura y Desarrollo</title>
-</head>
-<body id="top">
-    <BlogNavbar />
-
+<Layout
+    title="Categorías | Blog Cultura y Desarrollo"
+    description="Explora los artículos del Blog de Cultura y Desarrollo agrupados por tema."
+>
     <main style="max-width: 850px; margin: 0 auto; padding: 7rem 1.5rem 3rem;">
         <a href="/" style="color: var(--color-secondary); text-decoration: none; font-size: 0.95rem;">← Volver al inicio del blog</a>
         <header style="margin: 1.5rem 0 2rem;">
@@ -41,5 +34,4 @@ const categories = [...new Map(
         </ul>
         <BackToTop />
     </main>
-</body>
-</html>
+</Layout>

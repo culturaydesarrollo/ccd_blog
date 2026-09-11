@@ -1,0 +1,27 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  type?: 'website' | 'article';
+  author?: string;
+  publishedDate?: Date;
+}
+
+const { title, description, type = 'website', author, publishedDate } = Astro.props;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
+const publishedTime = publishedDate?.toISOString();
+---
+
+<link rel="canonical" href={canonicalUrl} />
+<meta name="description" content={description} />
+<meta property="og:locale" content="es_CO" />
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+{author && <meta name="author" content={author} />}
+{type === 'article' && publishedTime && <meta property="article:published_time" content={publishedTime} />}
+{type === 'article' && author && <meta property="article:author" content={author} />}

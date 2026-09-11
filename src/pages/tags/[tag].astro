@@ -1,10 +1,10 @@
 ---
 // src/pages/tags/[tag].astro
 import { getCollection } from 'astro:content';
-import BlogNavbar from '../../components/BlogNavbar.astro';
 import BackToTop from '../../components/BackToTop.astro';
+import Layout from '../../layouts/Layout.astro';
+import { formatDate } from '../../lib/formatDate';
 import { slugify } from '../../lib/slugify';
-import '../../styles/global.css';
 
 // 1. Generar las rutas dinámicas para cada etiqueta existente en los artículos
 export async function getStaticPaths() {
@@ -35,12 +35,11 @@ const { posts, tagName } = Astro.props;
 const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Artículos sobre #{tagName} | Blog</title>
+<Layout
+    title={`Artículos sobre #${tagName} | Blog`}
+    description={`Artículos relacionados con la etiqueta ${tagName} del Blog de Cultura y Desarrollo.`}
+>
+<Fragment slot="head">
     <style>
         .blog-container {
             max-width: 850px;
@@ -88,9 +87,7 @@ const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDa
             color: #718096;
         }
     </style>
-</head>
-<body id="top">
-    <BlogNavbar />
+</Fragment>
 
     <div class="blog-container">
         <header>
@@ -106,7 +103,7 @@ const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDa
             <ul style="list-style: none; padding: 0;">
                 {sortedPosts.map(post => (
                     <li class="post-item">
-                        <span class="post-date">{post.data.pubDate.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                        <span class="post-date">{formatDate(post.data.pubDate)}</span>
                         <h2 class="post-title" style="margin: 0.5rem 0;">
                             <a href={`/${post.id}/`}>{post.data.title}</a>
                         </h2>
@@ -118,5 +115,4 @@ const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDa
         </main>
         <BackToTop />
     </div>
-</body>
-</html>
+</Layout>

@@ -34,6 +34,11 @@ a:hover {
   text-decoration: underline;
 }
 
+:where(a, button, input, textarea, select):focus-visible {
+  outline: 3px solid var(--color-secondary);
+  outline-offset: 3px;
+}
+
 .back-to-top {
   display: block;
   margin: 2rem 0 0;
