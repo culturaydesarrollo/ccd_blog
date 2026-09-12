@@ -45,11 +45,11 @@ const isGeneralContact = postTitle === 'Consulta general del blog';
     <small id="contact-message-help" class="field-help">Escribe al menos 20 caracteres para enviar tu mensaje.</small>
     <small id="contact-message-error" class="field-error" aria-live="polite"></small>
 
+    <button type="submit">enviar mensaje</button>
+
     <p class="form-privacy">
       Tu mensaje se enviará por correo electrónico. No usamos estos datos para fines publicitarios ni los compartimos con terceros.
     </p>
-
-    <button type="submit">Enviar correo</button>
     <p class="form-status" aria-live="polite" role="status"></p>
   </form>
 
@@ -259,9 +259,11 @@ const isGeneralContact = postTitle === 'Consulta general del blog';
     color: #ffffff;
     cursor: pointer;
     font: inherit;
+    font-size: 0.8rem;
     font-weight: 700;
-    margin-top: 0.75rem;
-    padding: 0.75rem 1rem;
+    margin-left: auto;
+    margin-top: -0.3rem;
+    padding: 0.45rem 0.7rem;
     width: fit-content;
   }
 
