@@ -1,6 +1,6 @@
 ---
-title: "¿Quieres ser parte de nuestro espacio de opinión y reflexión?"
-description: "Participa en esta convocatoria y publica en el espacio de nuestras publicaciones online."
+title: "Sé parte de nuestro espacio de opinión y reflexión"
+description: "Un blog abierto a la diversidad. Ideas, conocimientos y reflexiones sobre Cultura, Patrimonio, Territorio, Sociedad, Desarrollo y los Grandes Desafíos de Colombia y América Latina."
 pubDate: "2026-09-10"
 author: "Corporación Cultura y Desarrollo"
 authorSlug: "corporacion-cultura-y-desarrollo"

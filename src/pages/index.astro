@@ -41,28 +41,35 @@ const regularPosts = sortedPosts.filter((post) => !post.data.featured);
 >
     <div class="blog-container">
         <header class="blog-header">
-            <h1>Blog de Cultura y Desarrollo</h1>
-            <p>Espacio de difusión, análisis y gestión cultural comunitaria.</p>
+            <img
+                src="/images/banner.png"
+                alt="Blog de Cultura y Desarrollo"
+                class="home-banner"
+                width="2200"
+                height="1080"
+                fetchpriority="high"
+                decoding="async"
+            />
         </header>
 
         <div class="blog-search-wrap" aria-label="Buscar artículos del blog">
-            <label class="blog-search-label" for="blog-search-input">Buscar en el blog</label>
-            <div class="blog-search-controls">
+            <form id="blog-search-form" class="blog-search-controls" role="search" aria-label="Buscar artículos">
                 <input
                     id="blog-search-input"
                     class="blog-search-input"
                     type="search"
                     placeholder="Título, tema o contenido..."
                     autocomplete="off"
+                    enterkeyhint="search"
+                    aria-controls="blog-empty-state blog-search-count"
                 />
-                <label class="blog-filter-label" for="blog-author-filter">Autor</label>
                 <select id="blog-author-filter" class="blog-author-filter" aria-label="Filtrar por autor">
                     <option value="">Todos los autores</option>
                     {authorList.map((author) => (
                         <option value={author}>{author}</option>
                     ))}
                 </select>
-            </div>
+            </form>
             <p id="blog-search-count" class="blog-search-count" aria-live="polite">
                 {sortedPosts.length} artículo{sortedPosts.length === 1 ? '' : 's'}
             </p>
@@ -88,7 +95,7 @@ const regularPosts = sortedPosts.filter((post) => !post.data.featured);
                                         <div class="featured-meta">
                                             <span class="featured-author-line">
                                                 <button class="author-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>
-                                                    <img class="post-author-avatar" src={post.data.authorImage} alt={`Foto de ${post.data.author}`} width="28" height="28" />
+                                                    <img class="post-author-avatar" src={post.data.authorImage} alt={`Foto de ${post.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
                                                 </button>
                                                 <span>Por {post.data.author}</span>
                                             </span>
@@ -101,7 +108,7 @@ const regularPosts = sortedPosts.filter((post) => !post.data.featured);
                                         <a href={`/${post.id}/`} class="read-more">Leer artículo →</a>
                                         <dialog class="author-modal" id={`author-modal-${post.id}`}>
                                             <div class="author-modal-heading">
-                                                <img class="author-modal-image" src={post.data.authorImage} alt={`Foto de ${post.data.author}`} width="72" height="72" />
+                                                <img class="author-modal-image" src={post.data.authorImage} alt={`Foto de ${post.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
                                                 <h2>{post.data.author}</h2>
                                             </div>
                                             <p>{authorBioBySlug.get(post.data.authorSlug ?? '') ?? post.data.authorBio ?? 'Biografía del autor próximamente.'}</p>
@@ -122,7 +129,7 @@ const regularPosts = sortedPosts.filter((post) => !post.data.featured);
                                 <div class="post-meta-inline">
                                     <span class="post-author-line">
                                         <button class="author-trigger" type="button" data-author-modal={`author-modal-${post.id}`} aria-label={`Ver biografía de ${post.data.author}`} title={`Abrir biografía de ${post.data.author}`}>
-                                            <img class="post-author-avatar" src={post.data.authorImage} alt={`Foto de ${post.data.author}`} width="28" height="28" />
+                                            <img class="post-author-avatar" src={post.data.authorImage} alt={`Foto de ${post.data.author}`} width="28" height="28" loading="lazy" decoding="async" />
                                         </button>
                                         <span>Por {post.data.author}</span>
                                     </span>
@@ -146,7 +153,7 @@ const regularPosts = sortedPosts.filter((post) => !post.data.featured);
                                 <a class="read-more" href={`/${post.id}/`}>Leer artículo →</a>
                                 <dialog class="author-modal" id={`author-modal-${post.id}`}>
                                     <div class="author-modal-heading">
-                                        <img class="author-modal-image" src={post.data.authorImage} alt={`Foto de ${post.data.author}`} width="72" height="72" />
+                                        <img class="author-modal-image" src={post.data.authorImage} alt={`Foto de ${post.data.author}`} width="72" height="72" loading="lazy" decoding="async" />
                                         <h2>{post.data.author}</h2>
                                     </div>
                                     <p>{authorBioBySlug.get(post.data.authorSlug ?? '') ?? post.data.authorBio ?? 'Biografía del autor próximamente.'}</p>
@@ -164,6 +171,7 @@ const regularPosts = sortedPosts.filter((post) => !post.data.featured);
     <script is:inline>
         const searchInput = document.getElementById('blog-search-input');
         const authorFilter = document.getElementById('blog-author-filter');
+        const searchForm = document.getElementById('blog-search-form');
         const posts = Array.from(document.querySelectorAll('.post-item, .featured-card'));
         const emptyState = document.getElementById('blog-empty-state');
         const countEl = document.getElementById('blog-search-count');
@@ -192,6 +200,10 @@ const regularPosts = sortedPosts.filter((post) => !post.data.featured);
 
         searchInput?.addEventListener('input', applyFilters);
         authorFilter?.addEventListener('change', applyFilters);
+        searchForm?.addEventListener('submit', (event) => {
+            event.preventDefault();
+            applyFilters();
+        });
 
         document.querySelectorAll('[data-author-modal]').forEach((trigger) => {
             const modal = document.getElementById(trigger.dataset.authorModal);

@@ -6,6 +6,3 @@ node_modules
 dist/*
 !dist/.gitkeep
 docs/*
-!docs/GUIA_PUBLICACION.md
-!docs/DOCUMENTACION_TECNICA_BLOG.md
-!docs/DOCUMENTACION_TECNICA_BLOG.pdf

@@ -1,6 +1,6 @@
 ---
 title: "Convocatoria Abierta de la Corporación Cultura y Desarrollo"
-description: "Participa en esta convocatoria y publica en el espacio de nuestras publicaciones online."
+description: "Participa en esta convocatoria y publica en nuestro nuevo blog."
 pubDate: "2026-09-10"
 author: "Corporación Cultura y Desarrollo"
 authorSlug: "corporacion-cultura-y-desarrollo"
